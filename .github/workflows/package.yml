@@ -7,13 +7,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-      - name: semver
-        uses: K-Phoen/semver-release-action@master
-        with:
-          release_branch: main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v2
       - name: build container image
         uses: docker/build-push-action@v1
@@ -25,4 +19,3 @@ jobs:
           tag_with_sha: true
           tag_with_ref: true
           add_git_labels: true
-          tags: ${{semver.tag}}
