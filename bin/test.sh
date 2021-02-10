@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+curl -H "Authorization: bearer 19dde1b047a51648be1a0a168fd8c2435e1aab44" -X POST -d " \
+ { \
+   \"query\": \"query { viewer { login }}\" \
+ } \
+" https://api.github.com/graphql
 
 graphqlQuery() {
   local query="$1"

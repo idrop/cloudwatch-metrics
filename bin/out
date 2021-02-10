@@ -1,20 +1,30 @@
 #!/usr/bin/env bash
-
 set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+log() {
+  args=("$@")
+  # shellcheck disable=SC2145
+  echo -e "${args[@]}${NC}" 1>&2
+}
+
 
 cwd="$(cd "$(dirname "$0")" && pwd)"
 
 cd "$1"
 
-# shellcheck disable=SC1090
 # load config
+# shellcheck disable=SC1090
 . "$cwd"/config
 
-
 export AWS_PAGER=""
+
 aws cloudwatch put-metric-data --namespace "$NAMESPACE" --metric-name "$METRIC" --value 1 --unit Count --dimensions "$DIMENSIONS"
 
-log "$GREEN$wrote metric $METRIC"
+log "${GREEN} placed AWS cloudwatch metric '${METRIC}' to namespace '${NAMESPACE}', dimensions: ${DIMENSIONS}"
 
 echo '{"version":{"ref":"none"}}'
 exit 0
