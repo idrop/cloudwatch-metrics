@@ -7,7 +7,7 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-    - name: semver
+      - name: semver
         uses: K-Phoen/semver-release-action@master
         with:
           release_branch: main
