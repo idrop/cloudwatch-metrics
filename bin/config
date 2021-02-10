@@ -1,0 +1,22 @@
+config=$(cat)
+
+echo $config > /tmp/source_vars
+
+export AWS_ACCESS_KEY_ID=$(echo $config | jq -r ".source.access_key_id")
+export AWS_SECRET_ACCESS_KEY=$(echo $config | jq -r ".source.secret_access_key")
+export AWS_DEFAULT_REGION=$(echo $config | jq -r ".source.region_name")
+
+NAMESPACE=$(echo "$config" | jq -r ".source.namespace")
+
+if [ -z "$NAMESPACE" ]; then
+    log "${RED}Mandatory configuration 'source.namespace' not set"
+    exit 1
+fi
+
+METRIC=$(echo "$config" | jq -r ".source.metric")
+if [ -z "$METRIC" ]; then
+    log "${RED}Mandatory configuration 'source.metric' not set"
+    exit 1
+fi
+
+DIMENSIONS="build_job_name=${BUILD_JOB_NAME},build_pipeline_name=${BUILD_PIPELINE_NAME}"
