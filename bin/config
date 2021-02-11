@@ -25,5 +25,3 @@ DIMENSIONS="build_job_name=${BUILD_JOB_NAME},build_pipeline_name=${BUILD_PIPELIN
 if [ "$METRIC" ]; then
   DIMENSIONS="${DIMENSIONS},${DIMENSIONS_PROVIDED}"
 fi
-
-log "dims are ${DIMENSIONS}"

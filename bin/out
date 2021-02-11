@@ -11,7 +11,6 @@ log() {
   echo -e "${args[@]}${NC}" 1>&2
 }
 
-
 cwd="$(cd "$(dirname "$0")" && pwd)"
 
 cd "$1"
@@ -21,8 +20,6 @@ cd "$1"
 . "$cwd"/config
 
 export AWS_PAGER=""
-
-log "${GREEN} dimensions in out are ${DIMENSIONS}"
 
 aws cloudwatch put-metric-data --namespace "$NAMESPACE" --metric-name "$METRIC" --value 1 --unit Count --dimensions "$DIMENSIONS"
 
