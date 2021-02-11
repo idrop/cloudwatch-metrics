@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: semver
+        id: semver
         uses: K-Phoen/semver-release-action@master
         with:
           release_branch: main
@@ -23,4 +24,4 @@ jobs:
           registry: ghcr.io
           repository: ${{ github.repository }}/cloudwatch-metrics
           tag_with_sha: true
-          tag_with_ref: true
+          tag: ${{steps.semver.outputs.tag}}
