@@ -36,3 +36,7 @@ jobs:
     on_failure:
       timeout: 1m
       put: cloudwatch-metrics-fails
+      params:
+        dimensions:
+          foo: bar
+          fuzz: buzz

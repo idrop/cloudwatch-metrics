@@ -19,4 +19,11 @@ if [ -z "$METRIC" ]; then
     exit 1
 fi
 
+DIMENSIONS_PROVIDED=$(echo "$config" | jq -r '.params.dimensions | to_entries|map([.key,.value]|join("=")) | join(",")')
 DIMENSIONS="build_job_name=${BUILD_JOB_NAME},build_pipeline_name=${BUILD_PIPELINE_NAME}"
+
+if [ "$METRIC" ]; then
+  DIMENSIONS="${DIMENSIONS},${DIMENSIONS_PROVIDED}"
+fi
+
+log "dims are ${DIMENSIONS}"

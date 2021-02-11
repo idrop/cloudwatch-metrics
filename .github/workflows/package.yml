@@ -7,6 +7,12 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
+      - name: semver
+        uses: K-Phoen/semver-release-action@master
+        with:
+          release_branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: checkout
         uses: actions/checkout@v2
       - name: build container image
