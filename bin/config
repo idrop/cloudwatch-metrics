@@ -26,7 +26,7 @@ if [ -z "$metric" ]; then
 fi
 
 value=$(echo "$config" | jq -r '.params | if has("value") then .value else 1 end')
-unit=$(echo "$config" | jq -r '.params | if has("unit") then .unit else Count end')
+unit=$(echo "$config" | jq -r '.params | if has("unit") then .unit else \"Count\" end')
 
 dimensions="build_job_name=${BUILD_JOB_NAME},build_pipeline_name=${BUILD_PIPELINE_NAME},build_team_name=$BUILD_TEAM_NAME"
 dimensions_provided=$(echo "$config" | jq -r '.params.dimensions | to_entries|map([.key,.value]|join("=")) | join(",")')
