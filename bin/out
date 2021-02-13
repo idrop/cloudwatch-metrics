@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
+red='\033[0;31m'
+green='\033[0;32m'
+nc='\033[0m'
 
 log() {
   args=("$@")
   # shellcheck disable=SC2145
-  echo -e "${args[@]}${NC}" 1>&2
+  echo -e "${green} ${args[@]}${nc}" 1>&2
+}
+
+log_err() {
+  args=("$@")
+  # shellcheck disable=SC2145
+  echo -e "${red} ${args[@]}${nc}" 1>&2
 }
 
 cwd="$(cd "$(dirname "$0")" && pwd)"
@@ -16,14 +22,13 @@ cwd="$(cd "$(dirname "$0")" && pwd)"
 cd "$1"
 
 # load config
-# shellcheck disable=SC1090
 . "$cwd"/config
 
 export AWS_PAGER=""
 
-aws cloudwatch put-metric-data --namespace "$NAMESPACE" --metric-name "$METRIC" --value 1 --unit Count --dimensions "$DIMENSIONS"
+aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric" --value $value --unit Count --dimensions "$dimensions"
 
-log "${GREEN} placed AWS cloudwatch metric '${METRIC}' to namespace '${NAMESPACE}', dimensions: ${DIMENSIONS}"
+log "placed AWS cloudwatch metric '${metric}' to namespace '${namespace}', dimensions: ${dimensions}"
 
-echo '{"version":{"ref":"none"}}'
+echo "{\"version\":{\"ref\":\"${version}\"}}"
 exit 0

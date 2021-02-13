@@ -1,37 +1,24 @@
-curl -H "Authorization: bearer ${TOKEN}" -X POST -d " \
- { \
-   \"query\": \"query { viewer { login }}\" \
- } \
-" https://api.github.com/graphql
+#!/bin/bash
 
-graphqlQuery() {
-  local query="$1"
-  shift
+data=$(curl -H "Authorization: token ${GH_TOKEN}" -s -d @- https://api.github.com/graphql << GQL
+{ "query": "
 
-  curl -s -H "Authorization: bearer $INPUT_TOKEN" -X POST -d '{"query":"'"$query"'"}' 'https://api.github.com/graphql'
-}
-listPackageVersions() {
-  local g="$1"
-  shift
-  local a="$1"
-  shift
-
-  local query="$(
-    cat <<EOF | sed 's/"/\\"/g' | tr '\n\r' ' '
-query {
-    repository(owner:"$USERNAME", name:"$REPOSNAME"){
-        packages(names:"$g.$a",first:1) {
-            nodes {
-                versions(first:100) {
-                    nodes {
-                        version
-                    }
-                }
+    {
+      repository(owner: \"idrop\", name: \"cloudwatch-metrics\") {
+        packages(first: 1) {
+          nodes {
+            versions(first: 100) {
+              nodes {
+                version
+              }
             }
+          }
         }
+      }
     }
-}
-EOF
-  )"
-  graphqlQuery "$query" | jq -r '.data.repository.packages.nodes[0].versions.nodes[].version'
-}
+
+" }
+GQL
+)
+
+echo $data | jq -r ''[.data.repository.packages.nodes[].versions.nodes[].version]
