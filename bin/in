@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-echo '{"version":{"ref":"none"}}'
+config=$(cat)
+version=$(echo "$config" | jq -r ".version")
+echo "{\"version\":{\"ref\":\"${version}\"}}"
+exit 0
