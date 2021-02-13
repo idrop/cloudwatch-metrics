@@ -26,7 +26,7 @@ cd "$1"
 
 export AWS_PAGER=""
 
-aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric" --value $value --unit Count --dimensions "$dimensions"
+aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric" --value "$value" --unit "$unit" --dimensions "$dimensions"
 
 log "placed AWS cloudwatch metric '${metric}' to namespace '${namespace}', dimensions: ${dimensions}"
 

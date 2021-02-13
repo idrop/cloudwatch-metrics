@@ -10,6 +10,7 @@
     "dimensions": {
       "foo": "bar",
       "fuzz": "buzz"
-    }
+    },
+    "value": 0
   }
 }
