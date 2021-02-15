@@ -5,5 +5,11 @@
     "aws_region": "eu-west-2",
     "namespace": "TestNamespace",
     "metric": "job_fails"
+  },
+  "params": {
+    "dimensions": {
+      "foo" : "bar",
+      "fuzz" : "buzz"
+    }
   }
 }

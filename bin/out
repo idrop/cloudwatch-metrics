@@ -1,34 +1,78 @@
 #!/usr/bin/env bash
-set -e
 
-red='\033[0;31m'
-green='\033[0;32m'
-nc='\033[0m'
+set -eu
+set -o pipefail
 
-log() {
-  args=("$@")
-  # shellcheck disable=SC2145
-  echo -e "${green} ${args[@]}${nc}" 1>&2
-}
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
 
-log_err() {
-  args=("$@")
-  # shellcheck disable=SC2145
-  echo -e "${red} ${args[@]}${nc}" 1>&2
-}
+source=$1
 
-cwd="$(cd "$(dirname "$0")" && pwd)"
+# Read inputs
+#source=$1
+payload=$(mktemp -t cloudwatch-metrics-out-request-payload.XXXXXX)
+cat >"$payload" <&0
 
-cd "$1"
+# Parse source config
+aws_access_key_id=$(jq -r '.source.aws_access_key_id // ""' <"$payload")
+aws_secret_access_key=$(jq -r '.source.aws_secret_access_key // ""' <"$payload")
+aws_region=$(jq -r '.source.aws_region // ""' <"$payload")
+namespace=$(jq -r '.source.namespace // ""' <"$payload")
+metric=$(jq -r '.source.metric // ""' <"$payload")
 
-# load config
-. "$cwd"/config
-log "here5"
+# Parse param config
+value=$(jq -r '.params.value // "1"' <"$payload")
+unit=$(jq -r '.params.unit // "Count"' <"$payload")
+dimensions_provided=$(jq -r '.params.dimensions // empty | to_entries | map([.key,.value] | join("=")) | join(",")' <"$payload")
+
+if [ -n "$aws_access_key_id" ]; then
+  export AWS_ACCESS_KEY_ID=$aws_access_key_id
+fi
+
+if [ -n "$aws_secret_access_key" ]; then
+  export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
+fi
+
+if [ -n "$aws_region" ]; then
+  export AWS_DEFAULT_REGION=$aws_region
+fi
+
+if [ -z "$namespace" ]; then
+  echo "mandatory configuration 'source.namespace' not set"
+  exit 1
+fi
+
+if [ -z "$metric" ]; then
+  echo "mandatory configuration 'source.metric' not set"
+  exit 1
+fi
+
+re='^[+-]?[0-9]+([.][0-9]+)?$'
+if ! [[ $value =~ $re ]] ; then
+   echo "optional configuration params.value is not a number (value is ${value})"
+   exit 1
+fi
+
+dimensions="build_job_name=${BUILD_JOB_NAME},build_pipeline_name=${BUILD_PIPELINE_NAME},build_team_name=${BUILD_TEAM_NAME}"
+
+if [ -n "$dimensions_provided" ]; then
+  dimensions="${dimensions},${dimensions_provided}"
+fi
+
 export AWS_PAGER=""
-log "dimensions: ${dimensions}"
-aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric_name" --value "$value" --unit "$unit" --dimensions "$dimensions"
-log "here6"
-log "placed AWS cloudwatch metric '${metric}' to namespace '${namespace}', dimensions: ${dimensions}"
 
-echo "{\"version\":{\"ref\":\"${version}\"}}"
-exit 0
+# see https://docs.aws.amazon.com/cli/latest/reference/cloudwatch/put-metric-data.html
+aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric" --value "$value" --unit "$unit" --dimensions "${dimensions}"
+msg="placed AWS cloudwatch metric '${metric}' to namespace '${namespace}', with dimensions: ${dimensions}"
+
+jq -n "{
+    version: {
+        ref: \"none\",
+    },
+    metadata: [
+        {
+            name: \"message\",
+            value: $(echo $msg | jq -R .),
+        }
+    ]
+}" >&3
