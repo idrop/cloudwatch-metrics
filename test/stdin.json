@@ -2,15 +2,14 @@
   "source": {
     "aws_access_key_id": "$ACCESS_KEY_ID",
     "aws_secret_access_key": "$SECRET_ACCESS_KEY",
-    "region": "eu-west-2",
+    "aws_region": "eu-west-2",
     "namespace": "TestNamespace",
     "metric": "job_fails"
   },
   "params": {
     "dimensions": {
-      "foo": "bar",
-      "fuzz": "buzz"
-    },
-    "value": 0
+      "foo" : "bar",
+      "fuzz" : "buzz"
+    }
   }
 }

@@ -4,16 +4,16 @@ resource_types:
   - name: cloudwatch-metrics
     type: docker-image
     source:
-      repository: ghcr.io/idrop/cloudwatch-metrics
-      tag: 0.0.0.3
+      repository: ghcr.io/idrop/cloudwatch-metrics/cloudwatch-metrics
+      tag: 0.0.9
 
 resources:
   - name: cloudwatch-metrics-fails
     type: cloudwatch-metrics
     source:
-      region_name: eu-west-2
-      access_key_id: ((aws_access_key_id))
-      secret_access_key: ((aws_secret_access_key))
+      aws_region: eu-west-2
+      aws_access_key_id: ((aws_access_key_id))
+      aws_secret_access_key: ((aws_secret_access_key))
       namespace: phil
       metric: fails
 
@@ -34,9 +34,4 @@ jobs:
               - |
                 exit 1
     on_failure:
-      timeout: 1m
       put: cloudwatch-metrics-fails
-      params:
-        dimensions:
-          foo: bar
-          fuzz: buzz
