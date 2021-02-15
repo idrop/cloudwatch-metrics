@@ -1,29 +1,6 @@
 #!/usr/bin/env bash
-set -e
-echo "running check...." 1>&2
 
-#data=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s -d @- https://api.github.com/graphql << GQL
-#{ "query": "
-#
-#    {
-#      repository(owner: \"idrop\", name: \"cloudwatch-metrics\") {
-#        packages(first: 1) {
-#          nodes {
-#            versions(first: 100) {
-#              nodes {
-#                version
-#              }
-#            }
-#          }
-#        }
-#      }
-#    }
-#
-#" }
-#GQL
-#)
+set -eu
+set -o pipefail
 
-config=$(cat)
-version=$(echo "$config" | jq -r ".version")
-
-echo "[{ \"ref\": \"${version}\" }]"
+echo '[]'

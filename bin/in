@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-config=$(cat)
-version=$(echo "$config" | jq -r ".version")
-echo "{\"version\":{\"ref\":\"${version}\"}}"
-exit 0
+set -eu
+set -o pipefail
+
+echo '{"version":{"ref":"none"}}'
