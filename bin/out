@@ -22,7 +22,7 @@ metric=$(jq -r '.source.metric // ""' <"$payload")
 
 # Parse param config
 value=$(jq -r '.params.value // "1"' <"$payload")
-unit=$(jq -r '.params.unit // "Count"' <"$payload")
+unit=$(jq -r '.params.unit // "None"' <"$payload")
 dimensions_provided=$(jq -r '.params.dimensions // empty | to_entries | map([.key,.value] | join("=")) | join(",")' <"$payload")
 
 if [ -n "$aws_access_key_id" ]; then
