@@ -3,4 +3,4 @@ RUN yum install jq -y
 COPY bin /opt/resource
 RUN chmod +x /opt/resource/check /opt/resource/config /opt/resource/in /opt/resource/out
 RUN rm -rf /tmp/*
-CMD ["--version"]
+ENTRYPOINT [ "/bin/bash" ]

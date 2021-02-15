@@ -23,11 +23,11 @@ cd "$1"
 
 # load config
 . "$cwd"/config
-
+log "here5"
 export AWS_PAGER=""
-
-aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric" --value "$value" --unit "$unit" --dimensions "$dimensions"
-
+log "dimensions: ${dimensions}"
+aws cloudwatch put-metric-data --namespace "$namespace" --metric-name "$metric_name" --value "$value" --unit "$unit" --dimensions "$dimensions"
+log "here6"
 log "placed AWS cloudwatch metric '${metric}' to namespace '${namespace}', dimensions: ${dimensions}"
 
 echo "{\"version\":{\"ref\":\"${version}\"}}"
