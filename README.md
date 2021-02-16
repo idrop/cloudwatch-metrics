@@ -48,7 +48,7 @@ resource_types:
     type: docker-image
     source:
       repository: ghcr.io/idrop/cloudwatch-metrics/cloudwatch-metrics
-      tag: 0.0.11
+      tag: 0.1
 ```
 
 ### Resource
@@ -73,9 +73,17 @@ jobs:
     plan:
       ........
     on_failure:
-      put: cloudwatch-metrics-fails
+      put: smoketest-fails
       params:
         dimensions:
           foo: bar
 ```
+
+If the job `smoketest-prod` above failed, the CloudWatch metric `Failures` would be put on namespace `SmokeTest` with value `1` and a timestamp of now.
+
+The dimensions, given a concourse team named `main`, pipeline named `test-pipeline` and job of `smoketest-prod` would be:
+* build_team_name: `main`
+* build_pipeline_name: `test-pipeline`
+* build_job_name: `smoketest-prod`
+* foo: `bar`
 
