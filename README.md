@@ -1,9 +1,9 @@
 # Concourse CloudWatch Metrics Resource
 
-[Concourse][concourse] resource for putting AWS CloudWatch metrics.
+[Concourse][concourse] resource for placing AWS CloudWatch metrics.
 
 Example uses:
-* monitor the rate at which regularly scheduled jobs fail, so that alerts can be raised.
+* record the rate at which regularly scheduled jobs fail, so that alerts can be raised.
 
 The resource is a wrapper around the AWS CLI for CloudWatch  [put-metric-data][put-metric-data].
 
