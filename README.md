@@ -51,7 +51,7 @@ resource_types:
     type: docker-image
     source:
       repository: ghcr.io/idrop/cloudwatch-metrics/cloudwatch-metrics
-      tag: 0.1
+      tag: 0.2
 ```
 
 ### Resource
